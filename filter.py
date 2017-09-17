@@ -6,14 +6,14 @@ class FilterCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
 		self.view.window().show_input_panel("Filter", "", self.end, self.filter, self.end)
 
-	def filter(self, filterstr):
+	def filter(self, filterstr, opts=sublime.LITERAL):
 		self.view.unfold(sublime.Region(0, self.view.size()))
 		self.view.erase_regions("FILTER")
 
-		if filterstr.strip() == "":
+		if len(filterstr) == 0:
 			return
 		
-		regs_f = self.view.find_all(filterstr)
+		regs_f = self.view.find_all(filterstr, opts)
 		regs = []
 		cur_r = 0
 		for reg in regs_f:
@@ -39,3 +39,10 @@ class FilterCommand(sublime_plugin.TextCommand):
 		sel = self.view.sel()
 		if len(sel) != 0:
 			self.view.show_at_center(self.view.sel()[0])
+
+class FilterRECommand(FilterCommand):
+	def run(self, edit):
+		self.view.window().show_input_panel("Filter (RE)", "", self.end, self.filter, self.end)
+
+	def filter(self, filterstr):
+		super().filter(filterstr, 0)
