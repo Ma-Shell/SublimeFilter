@@ -14,6 +14,7 @@ class FilterCommand(sublime_plugin.TextCommand):
 			return
 		
 		regs_f = self.view.find_all(filterstr, opts)
+		self.view.window().status_message("%i matches" % len(regs_f))
 		regs = []
 		cur_r = 0
 		for reg in regs_f:
