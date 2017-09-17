@@ -1,38 +1,34 @@
 import sublime
 import sublime_plugin
 import subprocess
-import os.path
-import re
 
 class FilterCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
 		self.view.window().show_input_panel("Filter", "", self.end, self.filter, self.end)
-		
+
 	def filter(self, filterstr):
 		self.view.unfold(sublime.Region(0, self.view.size()))
-		
-		regs = self.view.lines(sublime.Region(0, self.view.size()))
-		r = sublime.Region(0,0)
 		self.view.erase_regions("FILTER")
-		finds = []
-		for reg in regs:
-			line = self.view.substr(reg)
-			f = re.finditer(filterstr, line)
 
-			match = False
-			for a in f:
-				match = True
-				finds.append(sublime.Region(reg.begin() + a.start(), reg.begin() + a.end()))
+		if filterstr.strip() == "":
+			return
+		
+		regs_f = self.view.find_all(filterstr)
+		regs = []
+		cur_r = 0
+		for reg in regs_f:
+			reg_line = self.view.full_line(reg)
+			if cur_r < reg_line.begin():
+				regs.append(sublime.Region(cur_r, reg_line.begin()))
 
-			if match:
-				self.view.fold(r)
-				r = sublime.Region(reg.end(), reg.end())
-			else:
-				r = r.cover(reg)
+			cur_r = reg_line.end()
 
-		self.view.add_regions("FILTER", finds, "comment")
-
-		self.view.fold(r)
+		end = self.view.size()
+		if cur_r < end:
+			regs.append(sublime.Region(cur_r, end))
+			
+		self.view.fold(regs)
+		self.view.add_regions("FILTER", regs_f, "comment")
 		self.view.show(0)
 
 	def end(self, arg=None):
