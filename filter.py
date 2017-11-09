@@ -41,7 +41,7 @@ class FilterCommand(sublime_plugin.TextCommand):
 		if len(sel) != 0:
 			self.view.show_at_center(self.view.sel()[0])
 
-class FilterRECommand(FilterCommand):
+class FilterReCommand(FilterCommand):
 	def run(self, edit):
 		self.view.window().show_input_panel("Filter (RE)", "", self.end, self.filter, self.end)
 

@@ -1,0 +1,4 @@
+[
+	{"keys": ["alt+f"], "command": "filter"},
+	{"keys": ["alt+shift+f"], "command": "filter_re"}
+]

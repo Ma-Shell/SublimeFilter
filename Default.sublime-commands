@@ -1,3 +1,4 @@
 [
-	{"caption": "Filter", "command": "filter"}
+	{"caption": "Filter", "command": "filter"},
+	{"caption": "FilterRE", "command": "filter_re"}
 ]
